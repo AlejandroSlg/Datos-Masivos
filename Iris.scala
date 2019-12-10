@@ -1,3 +1,4 @@
+//Importamos las librerías
 import org.apache.spark.sql.SparkSession
 import spark.implicits._
 import org.apache.spark.sql.Column
@@ -16,46 +17,46 @@ val newcol = when($"class".contains("Iris-setosa"), 1.0).otherwise(when($"class"
 val newdf = df.withColumn("etiqueta", newcol)
 newdf.select("etiqueta","sepal_length", "sepal_width", "petal_length", "petal_width","class").show(150, false)
 
-//Junta los datos
+//Juntamos los datos
 val assembler = new VectorAssembler().setInputCols(Array("sepal_length", "sepal_width", "petal_length", "petal_width","etiqueta")).setOutputCol("features")
 
 //Transformamos los datos
 val features = assembler.transform(newdf)
 features.show(150)
 
-// Indexar los labels que esten en el dataset para incluir todos los labels en el index.
+/* Indexar los labels que estén en el dataset para incluir todos los labels en el índice */
 val labelIndexer = new StringIndexer().setInputCol("class").setOutputCol("indexedLabel").fit(features)
 println(s"Found labels: ${labelIndexer.labels.mkString("[", ", ", "]")}")
 
-// Automaticamente  identifica categoricamente los features, y los indexa.
-// añade  maxCategories para que las features cont > 4 distintos valores  sean tratadoscomo continuo.
+/*Añadimos maxCategories para que las features cont > 4 distintos valores  sean tratadoscomo continuo */
 val featureIndexer = new VectorIndexer().setInputCol("features").setOutputCol("indexedFeatures").setMaxCategories(4).fit(features)
 
-//Variables de entrenamient
+//Variables de entrenamiento
 val splits = features.randomSplit(Array(0.6, 0.4))
 val trainingData = splits(0)
 val testData = splits(1)
 
-// La capa de entrada con tamaño 4 (features), dos intermediarios tamaño 5 y 4, de salida tañamo 3 (por las clases)
+/*Capa de entrada con tamaño 4 (features), dos intermediarios tamaño 5 y una de 4, de salida tamaño 3*/
 val layers = Array[Int](5, 5, 4, 3)
 
-// Crea el entrenador y establecemos los parametros
+// Crea el entrenador y establecemos los parámetros
 val trainer = new MultilayerPerceptronClassifier().setLayers(layers).setLabelCol("indexedLabel").setFeaturesCol("indexedFeatures").setBlockSize(128).setSeed(System.currentTimeMillis).setMaxIter(200)
 
 //  Convierte los labels indexados devuelta a los labels originales
 val labelConverter = new IndexToString().setInputCol("prediction").setOutputCol("predictedLabel").setLabels(labelIndexer.labels)
 
-// Encadena los indexados y la  MultilayerPerceptronClassifier en una  Pipeline.
+/*Encadena los indexados y la  MultilayerPerceptronClassifier en una  Pipeline. Pipeline es una técnica para implementar
+el paralelismo a nivel de instrucciones dentro de un solo procesador*/
 val pipeline = new Pipeline().setStages(Array(labelIndexer, featureIndexer, trainer, labelConverter))
 
-//Entrena el modelo tambien corre los indexados.
+//Entrena el modelo
 val model = pipeline.fit(trainingData)
 
 //Predicciones
 val predictions = model.transform(testData)
 predictions.show(150)
 
-// Seleciona (prediccion, original label) y hace el test de error
+// Selecciona (predicción, original label) y hace el test de error
 val evaluator = new MulticlassClassificationEvaluator().setLabelCol("indexedLabel").setPredictionCol("prediction").setMetricName("accuracy")
 val accuracy = evaluator.evaluate(predictions)
 println("Test Error = " + (1.0 - accuracy))
