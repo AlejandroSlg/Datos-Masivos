@@ -399,3 +399,33 @@ Iteracion | Decision Tree| Logistic Regression| SVM
 14 | 89.83% | 88.32% | 88.90%
 15 | 89.83% | 88.32% | 88.90%
 Promedio | 89.83% | 88.32% | 88.90%
+
+---
+
+### Conclusión
+Si bien los buenos datos superan cualquier algoritmo en cualquier momento. En este caso, analizando estos tres algoritmos  personalmente diría que el mejor de ellos es “Logistic Regression”. Aunque está perdiendo terreno frente a otras técnicas con el progreso en la eficiencia y la facilidad de implementación de otros algoritmos complejos. Aunque si nos sujetamos al resultado numérico obtenido en las pruebas queda más que claro que el ganador fue “Decision Tree” y para este caso es la mejor solución.
+
+---
+
+### Referencias
+
+#### SVM
+* https://medium.com/machine-learning-101/chapter-2-svm-support-vector-machine-theory-f0812effc72
+* https://www.geeksforgeeks.org/classifying-data-using-support-vector-machinessvms-in-python/
+* http://www.statsoft.com/textbook/support-vector-machines
+* https://codeday.me/es/qa/20190518/711022.html
+
+##### Decision Tree
+* https://medium.com/greyatom/decision-trees-a-simple-way-to-visualize-a-decision-dc506a403aeb
+* https://www.geeksforgeeks.org/decision-tree/
+* https://dataaspirant.com/2017/01/30/how-decision-tree-algorithm-works/
+
+
+##### Logistic Regression
+* https://towardsdatascience.com/introduction-to-logistic-regression-66248243c148
+* https://kambria.io/blog/logistic-regression-for-machine-learning/
+* https://machinelearning-blog.com/2018/04/23/logistic-regression-101/
+
+#### Apache Spark y Scala
+* https://openwebinars.net/blog/que-es-apache-spark/
+* https://www.icemd.com/digital-knowledge/articulos/apache-spark-introduccion-que-es-y-como-funciona/
