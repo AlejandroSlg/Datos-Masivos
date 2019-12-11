@@ -8,11 +8,11 @@ Texto del primer apartado
 Texto del segundo apartado
 
 1. [Introducción](#id1)
-2. [Contenido del proyecto]	4
-3. [Marco Teórico]	5
-  1. [SVM]	5
-    1. [¿Qué hace SVM?]	5
-    2. [Parámetros de ajuste: Kernel, Regularización, Gamma y Margen]	6
+2. [Contenido del proyecto](#id2)
+3. [Marco Teórico](#id3)
+  *. [SVM]	5
+    *. [¿Qué hace SVM?]	5
+    *. [Parámetros de ajuste: Kernel, Regularización, Gamma y Margen]	6
 Ventajas y Desventajas	7
 Ventajas:	7
 Desventajas:	7
