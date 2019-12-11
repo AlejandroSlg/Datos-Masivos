@@ -14,3 +14,16 @@
 - [Referencias](#referencias)
   
 </details>
+
+--
+
+## Resultados
+
+Iteracion | Decision Tree| Multilayer Perceptron| Support Vector MAchine
+------------ | -------------| -------------| -------------
+1 | 89.83% | 89.79% | 88.90%
+2 | 89.83% | 89.79% | 88.90%
+3 | 89.83% | 89.79% | 88.90%
+4 | 89.83% | 89.79% | 88.90%
+5 | 89.83% | 89.79% | 88.90%
+Promedio | 89.83% | 89.79% | 88.90%
