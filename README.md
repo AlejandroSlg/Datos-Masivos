@@ -6,8 +6,8 @@
 - [Introduccion](#introduccion)
 - [Marco teórico](#marco-teorico)
   * [SVM](#support-vector-machine) 
+  * [Logistic Regression](#logistic-regression)
   * [Decision Tree](#decision-tree)
-  * [Logistic Regression](#multilayer-perceptron)
 - [Implementación](#implementacion)
 - [Resultados](#resultados)
 - [Conclusiones](#conclusiones)
@@ -61,6 +61,69 @@ Un buen margen es aquel en el que esta separación es mayor para ambas clases. L
 
 ![Buen-Margen](https://miro.medium.com/max/600/1*Ftns0ebfUHJDdpWt3Wvp-Q.png)
 ![Mal-Margen](https://miro.medium.com/max/600/1*NbGV1iEtNuklACNUv74w7A.png)
+
+#### Ventajas y Desventajas
+
+#### Ventajas:
+* Algoritmo clasificador en base a una sólida teoría. Teoremas de minimización de riesgo son el estado del arte en aprendizaje estadístico.
+* Se puede aplicar a datos representados en cualquier espacio de Hilbert (donde pueda definir una medida de distancia).
+* Relativamente pocos parámetros a estimar. 
+* Se pueden formular nuevas extensiones (flexibilidad).
+
+#### Desventajas:
+* Determinar los Kernels a utilizar es complejo.
+* Sólo es un clasificador binario. 
+
+
+---
+
+### Logistic Regression
+Es un algoritmo de clasificación utilizado para asignar observaciones a un conjunto discreto de clases. Algunos de los ejemplos de problemas de clasificación son correo electrónico no deseado, transacciones en línea fraudes o no fraude, tumor maligno o benigno. La regresión logística transforma su salida usando la función sigmoide logística para devolver un valor de probabilidad.
+
+La regresión logística es un algoritmo de aprendizaje automático que se utiliza para los problemas de clasificación, es un algoritmo de análisis predictivo y se basa en el concepto de probabilidad.
+
+![Logistic-Regression](https://miro.medium.com/max/2320/1*dm6ZaX5fuSmuVvM4Ds-vcg.jpeg)
+
+Podemos llamar a una regresión logística un modelo de regresión lineal, pero la regresión logística utiliza una función de costo más compleja, esta función de costo puede definirse como la ' función sigmoidea ' o también conocida como 'función logística' en lugar de una función lineal.
+
+La hipótesis de la regresión logística tiende a limitar la función de costo entre 0 y 1. Por lo tanto, las funciones lineales no lo representan, ya que puede tener un valor mayor que 1 o menor que 0, lo que no es posible según la hipótesis de la regresión logística.
+
+#### ¿Qué es la función sigmoidea?
+
+Para asignar los valores pronosticados a las probabilidades, utilizamos la función Sigmoide. La función asigna cualquier valor real a otro valor entre 0 y 1. En el aprendizaje automático, utilizamos sigmoide para asignar predicciones a probabilidades.
+
+![Sigmoid-function](https://miro.medium.com/max/640/1*OUOB_YF41M-O4GgZH_F2rw.png)
+
+#### ¿Cómo se usa la regresión logística?
+La regresión logística sólo debe usarse cuando las variables objetivo caen en categorías discretas y que si hay un rango de valores continuos que podría ser el valor objetivo, la regresión logística no debería usarse. Los ejemplos de situaciones en las que podría usar la regresión logística incluyen: 
+
+* Predecir si un correo electrónico es spam o no spam
+* Si un tumor es maligno o benigno
+* Si un hongo es venenoso o comestible.
+
+Cuando se utiliza la regresión logística, generalmente se especifica un umbral que indica a qué valor se colocará el ejemplo en una clase frente a la otra clase. En la tarea de clasificación de correo no deseado, se puede establecer un umbral de 0,5, lo que haría que un correo electrónico con una probabilidad del 50% o más de ser correo no deseado se clasifique como "correo no deseado" y cualquier correo electrónico con una probabilidad inferior al 50% se clasifique como "no correo no deseado" ".
+
+Aunque la regresión logística es más adecuada para instancias de clasificación binaria, se puede aplicar a problemas de clasificación multiclase, tareas de clasificación con tres o más clases.
+
+#### Ventajas y Desventajas
+
+#### Ventajas de la regresión logística
+
+1. La regresión logística funciona bien cuando el conjunto de datos es linealmente separable.
+
+2. La regresión logística es menos propensa al sobreajuste, pero puede sobreajustar en conjuntos de datos de alta dimensión. Debe considerar las técnicas de regularización (L1 y L2) para evitar el ajuste excesivo en estos escenarios.
+
+3. La regresión logística no solo da una medida de cuán relevante es un predictor (tamaño del coeficiente), sino también su dirección de asociación (positiva o negativa).
+
+4. La regresión logística es más fácil de implementar, interpretar y muy eficiente de entrenar.
+
+#### Desventajas de la regresión logística
+
+1. La principal limitación de la regresión logística es el supuesto de linealidad entre la variable dependiente y las variables independientes. En el mundo real, los datos rara vez son linealmente separables. La mayoría de las veces los datos serían un desastre desordenado.
+
+2. Si el número de observaciones es menor que el número de características, no se debe utilizar Regresión logística, de lo contrario, puede producir un sobreajuste.
+
+3. La regresión logística solo puede usarse para predecir funciones discretas. Por lo tanto, la variable dependiente de Regresión logística está restringida al conjunto de números discretos. Esta restricción en sí misma es problemática, ya que es prohibitiva para la predicción de datos continuos.
 
 ---
 
