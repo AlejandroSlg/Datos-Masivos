@@ -29,10 +29,10 @@ Support Vector Machine (SVM) es principalmente un método más clásico que real
 
 Para construir un hiperplano óptimo, SVM emplea un algoritmo de entrenamiento iterativo, que se utiliza para minimizar una función de error. Según la forma de la función de error, los modelos SVM se pueden clasificar en cuatro grupos distintos:
 
--Clasificación SVM Tipo 1 (también conocida como clasificación C-SVM)
--Clasificación SVM tipo 2 (también conocida como clasificación nu-SVM)
--Regresión SVM tipo 1 (también conocida como regresión epsilon-SVM)
--Regresión SVM tipo 2 (también conocida como regresión nu-SVM)
+*Clasificación SVM Tipo 1 (también conocida como clasificación C-SVM)
+*Clasificación SVM tipo 2 (también conocida como clasificación nu-SVM)
+*Regresión SVM tipo 1 (también conocida como regresión epsilon-SVM)
+*Regresión SVM tipo 2 (también conocida como regresión nu-SVM)
 
 
 ---
