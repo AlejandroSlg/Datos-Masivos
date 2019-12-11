@@ -127,6 +127,113 @@ Aunque la regresión logística es más adecuada para instancias de clasificaci�
 
 ---
 
+### Decision Tree
+Un árbol de decisiones es una herramienta de soporte de decisiones que utiliza un gráfico o modelo de decisiones en forma de árbol y sus posibles consecuencias, incluidos los resultados de eventos fortuitos, los costos de recursos y la utilidad. Es una forma de mostrar un algoritmo que solo contiene sentencias de control condicional.
+
+Un árbol de decisión es una estructura similar a un diagrama de flujo en el que cada nodo interno representa una "prueba" en un atributo (por ejemplo, si una moneda lanza cara o cruz), cada rama representa el resultado de la prueba y cada nodo hoja representa un etiqueta de clase (decisión tomada después de calcular todos los atributos). Los caminos de raíz a hoja representan reglas de clasificación.
+
+#### ¿Cómo funciona el árbol de decisión?
+El árbol de decisión es un tipo de algoritmo de aprendizaje supervisado (que tiene una variable objetivo predefinida) que se usa principalmente en problemas de clasificación. Funciona para variables de entrada y salida categóricas y continuas. En esta técnica, dividimos la población o muestra en dos o más conjuntos homogéneos (o subpoblaciones) basados en el divisor/diferenciador más significativo en las variables de entrada.
+
+#### Tipos de árboles de decisión
+Los tipos de árbol de decisión se basan en el tipo de variable objetivo que tenemos. Puede ser de dos tipos:
+
+1. Árbol de decisión de variable categórica: Árbol de decisión que tiene una variable objetivo categórica y luego se llama árbol de decisión de variable categórica. 
+2. Árbol de decisión de variable continua: el árbol de decisión tiene una variable objetivo continua y luego se llama árbol de decisión de variable continua.
+
+#### Construcción del árbol de decisión
+La manera en la que el árbol puede obtener información es dividiendo el conjunto de fuentes en subconjuntos basados ​​en una prueba de valor de atributo. Este proceso se repite en cada subconjunto derivado de una manera recursiva llamada partición recursiva . La recursión se completa cuando el subconjunto en un nodo tiene el mismo valor de la variable objetivo, o cuando la división ya no agrega valor a las predicciones. La construcción del clasificador de árbol de decisión no requiere ningún conocimiento de dominio o configuración de parámetros y, por lo tanto, es apropiado para el descubrimiento de conocimiento exploratorio. Los árboles de decisión pueden manejar datos de alta dimensión. En general, el clasificador de árbol de decisión tiene buena precisión. La inducción del árbol de decisión es un enfoque inductivo típico para aprender el conocimiento sobre la clasificación.
+
+#### Fortalezas y debilidades 
+
+#### Las fortalezas de los métodos del árbol de decisión son:
+
+* Los árboles de decisión pueden generar reglas comprensibles.
+* Los árboles de decisión realizan la clasificación sin requerir muchos cálculos.
+* Los árboles de decisión pueden manejar variables continuas y categóricas.
+* Los árboles de decisión proporcionan una indicación clara de qué campos son más importantes para la predicción o clasificación.
+
+#### Las debilidades de los métodos del árbol de decisión:
+
+* Los árboles de decisión son menos apropiados para las tareas de estimación donde el objetivo es predecir el valor de un atributo continuo.
+* Los árboles de decisión son propensos a errores en los problemas de clasificación con muchas clases y un número relativamente pequeño de ejemplos de capacitación.
+* El árbol de decisión puede ser computacionalmente costoso de entrenar. El proceso de crecimiento de un árbol de decisión es computacionalmente costoso. En cada nodo, cada campo de división candidato debe ordenarse antes de poder encontrar su mejor división. En algunos algoritmos, se utilizan combinaciones de campos y se debe realizar una búsqueda para obtener pesos de combinación óptimos. Los algoritmos de poda también pueden ser costosos ya que se deben formar y comparar muchos subárboles candidatos.
+
+---
+
+### Implementación
+
+#### Apache Spark
+Apache Spark es un motor de procesamiento distribuido responsable de orquestar, distribuir y monitorear aplicaciones que constan de múltiples tareas de procesamiento de datos sobre varias máquinas de trabajo, que forman un cluster.
+
+Respecto a su propósito general, la virtud de Spark es estar diseñado para cubrir una amplia gama de cargas de trabajo que previamente requerían sistemas distribuidos diferentes. Éstos sistemas incluyen procesamiento batch, algoritmos iterativos, queries interactivas, procesamiento streaming… a menudo empleados todos ellos en un pipeline típico de análisis de datos.
+
+Spark es flexible en su utilización, y ofrece una serie de APIs que permiten a usuarios con diferentes backgrounds poder utilizarlo. Incluye APIs de Python, Java, Scala, SQL y R, con funciones integradas y en general una performance razonablemente buena en todas ellas.
+Permite trabajar con datos más o menos estructurados (RDDs, dataframes, datasets) dependiendo de las necesidades y preferencias del usuario.
+
+#### Características principales
+* Trabaja en memoria, con lo que se consigue mucha mayor velocidad de procesamiento.
+* También permite trabajar en disco. De esta manera si por ejemplo tenemos un fichero muy grande o una cantidad de información que no cabe en memoria, la herramienta permite almacenar parte en disco, lo que hace perder velocidad. Esto hace que tengamos que intentar encontrar el equilibrio entre lo que se almacena en memoria y lo que se almacena en disco, para tener una buena velocidad y para que el coste no sea demasiado elevado, ya que la memoria siempre es bastante más cara que el disco.
+* Nos proporciona API para Java, Scala, Python y R.
+* Permite el procesamiento en tiempo real, con un módulo llamado Spark Streaming, que combinado con Spark SQL nos va a permitir el procesamiento en tiempo real de los datos. Conforme vayamos inyectando los datos podemos ir transformándolos y volcándolos a un resultado final.
+* Resilient Distributed Dataset (RDD): Usa la evaluación perezosa, lo que significa es que todas las transformaciones que vamos realizando sobre los RDD, no se resuelven, si no que se van almacenando en un grafo acíclico dirigido (DAG), y cuando ejecutamos una acción, es decir, cuando la herramienta no tenga más opción que ejecutar todas las transformaciones, será cuando se ejecuten. Esto es un arma de doble filo, ya que tiene una ventaja y un inconveniente. La ventaja es que se gana velocidad al no ir realizando las transformaciones continuamente, sino solo cuando es necesario. El inconveniente es que si alguna transformación eleva algún tipo de excepción, la misma no se va a detectar hasta que no se ejecute la acción, por lo que es más difícil de debuggear o programar.
+
+#### SVM
+```scala
+//Importamos las librerias necesarias con las que vamos a trabajar
+import org.apache.spark.mllib.classification.{SVMModel, SVMWithSGD}
+import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
+import org.apache.spark.mllib.util.MLUtils
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.types.DateType
+import org.apache.spark.sql.{SparkSession, SQLContext}
+import org.apache.spark.ml.feature.VectorIndexer
+import org.apache.spark.ml.feature.VectorAssembler
+import org.apache.spark.ml.Transformer
+import org.apache.spark.ml.classification.LinearSVC
+import org.apache.spark.ml.classification.LogisticRegression
+import org.apache.log4j._
+
+//Quita los warnings
+Logger.getLogger("org").setLevel(Level.ERROR)
+
+//Creamos una sesion de spark y cargamos los datos del CSV en un datraframe
+val spark = SparkSession.builder().getOrCreate()
+val df = spark.read.option("header","true").option("inferSchema","true").option("delimiter",";").format("csv").load("bank-full.csv")
+//Desblegamos los tipos de datos.
+df.printSchema()
+df.show(1)
+
+//Cambiamos la columna y por una con datos binarios.
+val change1 = df.withColumn("y",when(col("y").equalTo("yes"),1).otherwise(col("y")))
+val change2 = change1.withColumn("y",when(col("y").equalTo("no"),2).otherwise(col("y")))
+val newcolumn = change2.withColumn("y",'y.cast("Int"))
+//Desplegamos la nueva columna
+newcolumn.show(1)
+
+//Generamos la tabla features
+val assembler = new VectorAssembler().setInputCols(Array("balance","day","duration","pdays","previous")).setOutputCol("features")
+val fea = assembler.transform(newcolumn)
+//Mostramos la nueva columna
+fea.show(1)
+//Cambiamos la columna y a la columna label
+val cambio = fea.withColumnRenamed("y", "label")
+val feat = cambio.select("label","features")
+feat.show(1)
+
+//Logistic Regresion
+val logistic = new LogisticRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8)
+// Fit del modelo
+val logisticModel = logistic.fit(feat)
+//Impresion de los coegicientes y de la intercepcion
+println(s"Coefficients: ${logisticModel.coefficients} Intercept: ${logisticModel.intercept}")
+val logisticMult = new LogisticRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8).setFamily("multinomial")
+val logisticMultModel = logisticMult.fit(feat)
+println(s"Multinomial coefficients: ${logisticMultModel.coefficientMatrix}")
+println(s"Multinomial intercepts: ${logisticMultModel.interceptVector}")
+
+```
+---
 ## Resultados
 
 Iteracion | Decision Tree| Logistic Regression| SVM
