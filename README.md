@@ -19,7 +19,7 @@
 
 ## Resultados
 
-Iteracion | Decision Tree| Multilayer Perceptron| Support Vector MAchine
+Iteracion | Decision Tree| Logistic Regression| SVM
 ------------ | -------------| -------------| -------------
 1 | 89.83% | 89.79% | 88.90%
 2 | 89.83% | 89.79% | 88.90%
