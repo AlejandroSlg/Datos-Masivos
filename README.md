@@ -9,6 +9,9 @@
   * [Logistic Regression](#logistic-regression)
   * [Decision Tree](#decision-tree)
 - [Implementación](#implementacion)
+  * [Código SVM](#codigo-support-vector-machine) 
+  * [Código Logistic Regression](#codigo-logistic-regression)
+  * [Código Decision Tree](#codigo-decision-tree)
 - [Resultados](#resultados)
 - [Conclusiones](#conclusiones)
 - [Referencias](#referencias)
@@ -178,9 +181,9 @@ Permite trabajar con datos más o menos estructurados (RDDs, dataframes, dataset
 * Permite el procesamiento en tiempo real, con un módulo llamado Spark Streaming, que combinado con Spark SQL nos va a permitir el procesamiento en tiempo real de los datos. Conforme vayamos inyectando los datos podemos ir transformándolos y volcándolos a un resultado final.
 * Resilient Distributed Dataset (RDD): Usa la evaluación perezosa, lo que significa es que todas las transformaciones que vamos realizando sobre los RDD, no se resuelven, si no que se van almacenando en un grafo acíclico dirigido (DAG), y cuando ejecutamos una acción, es decir, cuando la herramienta no tenga más opción que ejecutar todas las transformaciones, será cuando se ejecuten. Esto es un arma de doble filo, ya que tiene una ventaja y un inconveniente. La ventaja es que se gana velocidad al no ir realizando las transformaciones continuamente, sino solo cuando es necesario. El inconveniente es que si alguna transformación eleva algún tipo de excepción, la misma no se va a detectar hasta que no se ejecute la acción, por lo que es más difícil de debuggear o programar.
 
-#### SVM
+#### Código SVM
 ```scala
-//Importamos las librerias necesarias con las que vamos a trabajar
+/*Importamos las librerias necesarias con las que vamos a trabajar*/
 import org.apache.spark.mllib.classification.{SVMModel, SVMWithSGD}
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 import org.apache.spark.mllib.util.MLUtils
@@ -191,66 +194,208 @@ import org.apache.spark.ml.feature.VectorIndexer
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.Transformer
 import org.apache.spark.ml.classification.LinearSVC
-import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.log4j._
 
-//Quita los warnings
+/*Quita los warnings*/
 Logger.getLogger("org").setLevel(Level.ERROR)
 
-//Creamos una sesion de spark y cargamos los datos del CSV en un datraframe
+/*Creamos una sesion de spark y cargamos los datos del CSV en un datraframe*/
 val spark = SparkSession.builder().getOrCreate()
 val df = spark.read.option("header","true").option("inferSchema","true").option("delimiter",";").format("csv").load("bank-full.csv")
-//Desblegamos los tipos de datos.
+
+/*Desblegamos los tipos de datos.*/
 df.printSchema()
 df.show(1)
 
-//Cambiamos la columna y por una con datos binarios.
+/*Cambiamos la columna y por una con datos binarios.*/
 val change1 = df.withColumn("y",when(col("y").equalTo("yes"),1).otherwise(col("y")))
 val change2 = change1.withColumn("y",when(col("y").equalTo("no"),2).otherwise(col("y")))
 val newcolumn = change2.withColumn("y",'y.cast("Int"))
-//Desplegamos la nueva columna
+
+/*Desplegamos la nueva columna*/
 newcolumn.show(1)
 
-//Generamos la tabla features
+/*Generamos la tabla features*/
 val assembler = new VectorAssembler().setInputCols(Array("balance","day","duration","pdays","previous")).setOutputCol("features")
 val fea = assembler.transform(newcolumn)
-//Mostramos la nueva columna
+
+/*Mostramos la nueva columna*/
 fea.show(1)
-//Cambiamos la columna y a la columna label
+
+/*Cambiamos la columna y a la columna label*/
 val cambio = fea.withColumnRenamed("y", "label")
 val feat = cambio.select("label","features")
 feat.show(1)
 
-//Logistic Regresion
-val logistic = new LogisticRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8)
-// Fit del modelo
-val logisticModel = logistic.fit(feat)
-//Impresion de los coegicientes y de la intercepcion
-println(s"Coefficients: ${logisticModel.coefficients} Intercept: ${logisticModel.intercept}")
-val logisticMult = new LogisticRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8).setFamily("multinomial")
-val logisticMultModel = logisticMult.fit(feat)
-println(s"Multinomial coefficients: ${logisticMultModel.coefficientMatrix}")
-println(s"Multinomial intercepts: ${logisticMultModel.interceptVector}")
+/*SVM*/
+val c1 = feat.withColumn("label",when(col("label").equalTo("1"),0).otherwise(col("label")))
+val c2 = c1.withColumn("label",when(col("label").equalTo("2"),1).otherwise(col("label")))
+val c3 = c2.withColumn("label",'label.cast("Int"))
+val linsvc = new LinearSVC().setMaxIter(10).setRegParam(0.1)
 
+/* Fit del modelo*/
+val linsvcModel = linsvc.fit(c3)
+
+/*Imprimimos linea de intercepcion*/
+println(s"Coefficients: ${linsvcModel.coefficients} Intercept: ${linsvcModel.intercept}")
+println(s"Accuracy: $accuracy")
+```
+
+#### Código Logistic Regression
+```scala
+/*Importamos las librerias*/
+import org.apache.spark.ml.classification.LogisticRegression
+import org.apache.spark.ml.feature.{VectorAssembler, StringIndexer, VectorIndexer, OneHotEncoder}
+import org.apache.spark.ml.linalg.Vectors
+import org.apache.spark.sql.SparkSession
+val spark = SparkSession.builder().getOrCreate()
+
+/*Se importan los datos del CSV*/
+val data  = spark.read.option("header","true").option("inferSchema", "true").option("delimiter",";").format("csv").load("bank-full.csv")
+
+/*Se categorice las variables de string a valor númerico*/
+val yes = data.withColumn("y",when(col("y").equalTo("yes"),1).otherwise(col("y")))
+val clean = yes.withColumn("y",when(col("y").equalTo("no"),2).otherwise(col("y")))
+val cleanData = clean.withColumn("y",'y.cast("Int"))
+
+/*Creación del Array con los datos seleccionados*/
+val featureCols = Array("age","previous","balance","duration")
+
+/*Creación del Vector en base a los features*/
+val assembler = new VectorAssembler().setInputCols(featureCols).setOutputCol("features")
+
+/*Transformación a un nuevo DF*/
+val df2 = assembler.transform(cleanData)
+
+/*Rename de columnas*/
+val featuresLabel = df2.withColumnRenamed("y", "label")
+
+/*Selección de index*/
+val dataI = featuresLabel.select("label","features")
+
+/*Creación del Array con los datos de entrenamiento y test*/
+val Array(training, test) = dataI.randomSplit(Array(0.7, 0.3), seed = 12345)
+
+/*Modelo de Regression*/
+val lr = new LogisticRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8)
+
+val lrModel = lr.fit(training)
+
+/*Impresión de los coeficientes e intercepciones*/
+println(s"Coefficients: \n${lrModel.coefficientMatrix}")
+println(s"Intercepts: \n${lrModel.interceptVector}")
+
+
+/*Impresión de la precisión*/
+println(s"Accuracy: $accuracy")
+```
+
+#### Código Decision Tree
+```scala
+/*Importamos las librerias necesarias con las que vamos a trabajar*/
+import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
+import org.apache.spark.mllib.util.MLUtils
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.types.DateType
+import org.apache.spark.sql.{SparkSession, SQLContext}
+import org.apache.spark.ml.feature.VectorIndexer
+import org.apache.spark.ml.feature.VectorAssembler
+import org.apache.spark.ml.Transformer
+import org.apache.spark.mllib.tree.model.DecisionTreeModel
+import org.apache.spark.ml.{Pipeline, PipelineModel}
+import org.apache.spark.ml.feature.StringIndexer
+import org.apache.spark.mllib.tree.DecisionTree
+import org.apache.spark.mllib.tree.model.DecisionTreeModel
+import org.apache.spark.mllib.util.MLUtils
+import org.apache.spark.ml.classification.DecisionTreeClassifier
+import org.apache.spark.ml.feature.IndexToString
+import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator
+import org.apache.spark.ml.classification.DecisionTreeClassificationModel
+import org.apache.log4j._
+
+/*Quita los warnings*/
+Logger.getLogger("org").setLevel(Level.ERROR)
+
+/*Creamos una sesion de spark y cargamos los datos del CSV en un datraframe*/
+val spark = SparkSession.builder().getOrCreate()
+val df = spark.read.option("header","true").option("inferSchema","true").option("delimiter",";").format("csv").load("bank-full.csv")
+
+/*Desblegamos los tipos de datos.*/
+df.printSchema()
+df.show(1)
+
+/*Cambiamos la columna y por una con datos binarios*/
+val change1 = df.withColumn("y",when(col("y").equalTo("yes"),1).otherwise(col("y")))
+val change2 = change1.withColumn("y",when(col("y").equalTo("no"),2).otherwise(col("y")))
+val newcolumn = change2.withColumn("y",'y.cast("Int"))
+
+/*Desplegamos la nueva columna*/
+newcolumn.show(1)
+
+/*Generamos la tabla features*/
+val assembler = new VectorAssembler().setInputCols(Array("balance","day","duration","pdays","previous")).setOutputCol("features")
+val fea = assembler.transform(newcolumn)
+/*Mostramos la nueva columna*/
+fea.show(1)
+
+/*Cambiamos la columna y a la columna label*/
+val cambio = fea.withColumnRenamed("y", "label")
+val feat = cambio.select("label","features")
+feat.show(1)
+
+/*DecisionTree*/
+val labelIndexer = new StringIndexer().setInputCol("label").setOutputCol("indexedLabel").fit(feat)
+
+/* features con mas de 4 valores distinctivos son tomados como continuos*/
+val featureIndexer = new VectorIndexer().setInputCol("features").setOutputCol("indexedFeatures").setMaxCategories(4) 
+
+/*Division de los datos entre 70% y 30% en un arreglo*/
+val Array(trainingData, testData) = feat.randomSplit(Array(0.7, 0.3))
+
+/*Creamos un objeto DecisionTree*/
+val dt = new DecisionTreeClassifier().setLabelCol("indexedLabel").setFeaturesCol("indexedFeatures")
+
+/*Rama de prediccion*/
+val labelConverter = new IndexToString().setInputCol("prediction").setOutputCol("predictedLabel").setLabels(labelIndexer.labels)
+
+/*Juntamos los datos en un pipeline*/
+val pipeline = new Pipeline().setStages(Array(labelIndexer, featureIndexer, dt, labelConverter))
+
+/*Create a model de training*/
+val model = pipeline.fit(trainingData)
+
+/*Transformacion de datos en el modelo*/
+val predictions = model.transform(testData)
+
+/*Desplegamos predicciones*/
+predictions.select("predictedLabel", "label", "features").show(5)
+
+/*Evaluamos la exactitud*/
+val evaluator = new MulticlassClassificationEvaluator().setLabelCol("indexedLabel").setPredictionCol("prediction").setMetricName("accuracy")
+val accuracy = evaluator.evaluate(predictions)
+println(s"Test Error = ${(1.0 - accuracy)}")
+
+val treeModel = model.stages(2).asInstanceOf[DecisionTreeClassificationModel]
+println(s"Learned classification tree model:\n ${treeModel.toDebugString}")
 ```
 ---
 ## Resultados
 
 Iteracion | Decision Tree| Logistic Regression| SVM
 ------------ | -------------| -------------| -------------
-1 | 89.83% | 89.29% | 88.90%
-2 | 89.83% | 89.29% | 88.90%
-3 | 89.83% | 89.29% | 88.90%
-4 | 89.83% | 89.29% | 88.90%
-5 | 89.83% | 89.29% | 88.90%
-6 | 89.83% | 89.29% | 88.90%
-7 | 89.83% | 89.29% | 88.90%
-8 | 89.83% | 89.29% | 88.90%
-9 | 89.83% | 89.29% | 88.90%
-10 | 89.83% | 89.29% | 88.90%
-11 | 89.83% | 89.29% | 88.90%
-12 | 89.83% | 89.29% | 88.90%
-13 | 89.83% | 89.29% | 88.90%
-14 | 89.83% | 89.29% | 88.90%
-15 | 89.83% | 89.29% | 88.90%
-Promedio | 89.83% | 89.29% | 88.90%
+1 | 89.83% | 88.32% | 88.90%
+2 | 89.83% | 88.32% | 88.90%
+3 | 89.83% | 88.32% | 88.90%
+4 | 89.83% | 88.32% | 88.90%
+5 | 89.83% | 88.32% | 88.90%
+6 | 89.83% | 88.32% | 88.90%
+7 | 89.83% | 88.32% | 88.90%
+8 | 89.83% | 88.32% | 88.90%
+9 | 89.83% | 88.32% | 88.90%
+10 | 89.83% | 88.32% | 88.90%
+11 | 89.83% | 88.32% | 88.90%
+12 | 89.83% | 88.32% | 88.90%
+13 | 89.83% | 88.32% | 88.90%
+14 | 89.83% | 88.32% | 88.90%
+15 | 89.83% | 88.32% | 88.90%
+Promedio | 89.83% | 88.32% | 88.90%
