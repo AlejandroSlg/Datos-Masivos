@@ -3,15 +3,15 @@
 <details>
 <summary>Contenido</summary>
 
-- [Introduccion](#introduccion)
-- [Marco teórico](#marco-teorico)
+- [Introduccion](#introducción)
+- [Marco teórico](#marco-teórico)
   * [SVM](#support-vector-machine) 
   * [Logistic Regression](#logistic-regression)
   * [Decision Tree](#decision-tree)
-- [Implementación](#implementacion)
-  * [Código SVM](#codigo-support-vector-machine) 
-  * [Código Logistic Regression](#codigo-logistic-regression)
-  * [Código Decision Tree](#codigo-decision-tree)
+- [Implementación](#implementación)
+  * [Código SVM](#código-support-vector-machine) 
+  * [Código Logistic Regression](#código-logistic-regression)
+  * [Código Decision Tree](#código-decision-tree)
 - [Resultados](#resultados)
 - [Conclusiones](#conclusiones)
 - [Referencias](#referencias)
