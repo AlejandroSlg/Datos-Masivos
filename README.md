@@ -36,7 +36,7 @@ Para construir un hiperplano óptimo, SVM emplea un algoritmo de entrenamiento i
 
 #### Parámetros de ajuste: Kernel, Regularización, Gamma y Margen
 
-* Kernel
+#### Kernel
 El aprendizaje del hiperplano en SVM lineal se realiza transformando el problema utilizando algo de álgebra lineal. Aquí es donde el kernel juega un papel.
 Para el kernel lineal, la ecuación para la predicción de una nueva entrada utilizando el producto de punto entre la entrada (x) y cada vector de soporte (xi) se calcula de la siguiente manera:
 f (x) = B (0) + suma (ai * (x, xi))
@@ -44,14 +44,22 @@ Esta es una ecuación que implica calcular los productos internos de un nuevo ve
 
 El núcleo polinomial se puede escribir como K (x, xi) = 1 + sum (x * xi) ^ d y exponencial como K (x, xi) = exp (-gamma * sum ((x - xi²)).
 
-* Regularización
+#### Regularización
 El parámetro Regularización (a menudo denominado parámetro C en la biblioteca sklearn de python) le dice a la optimización SVM cuánto desea evitar clasificar erróneamente cada ejemplo de entrenamiento.
 Para valores grandes de C, la optimización elegirá un hiperplano de menor margen si ese hiperplano hace un mejor trabajo al clasificar correctamente todos los puntos de entrenamiento. Por el contrario, un valor muy pequeño de C hará que el optimizador busque un hiperplano de separación de mayor margen, incluso si ese hiperplano clasifica erróneamente más puntos.
 
-* Gama
+#### Gama
 El parámetro gamma define qué tan lejos llega la influencia de un solo ejemplo de entrenamiento, con valores bajos que significan "lejos" y valores altos que significan "cerca". En otras palabras, con gama baja, los puntos alejados de la línea de separación plausible se consideran en el cálculo de la línea de separación. Donde como gama alta significa que los puntos cercanos a la línea plausible se consideran en el cálculo.
 
+[Gama](https://miro.medium.com/max/1222/0*4g1bSpWVZO5SFFZF)
 
+#### Margen
+Y finalmente la última pero muy importante característica del clasificador SVM. SVM to core intenta lograr un buen margen. Un margen es una separación de línea a los puntos de clase más cercanos.
+
+Un buen margen es aquel en el que esta separación es mayor para ambas clases. Las imágenes a continuación dan un ejemplo visual de buenos y malos márgenes. Un buen margen permite que los puntos estén en sus respectivas clases sin cruzar a otra clase.
+
+[Buen-Margen](https://miro.medium.com/max/600/1*Ftns0ebfUHJDdpWt3Wvp-Q.png)
+[Mal-Margen](https://miro.medium.com/max/600/1*NbGV1iEtNuklACNUv74w7A.png)
 ---
 
 ## Resultados
