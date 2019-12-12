@@ -1,6 +1,32 @@
 
 # Datos-Masivos
 
+## Data Mining
+Data mining is the process of finding anomalies, patterns and correlations within large data sets to predict outcomes. Using a broad range of techniques, you can use this information to increase revenues, cut costs, improve customer relationships, reduce risks and more.
+
+Data mining allows you to:
+
+-Sift through all the chaotic and repetitive noise in your data.
+-Understand what is relevant and then make good use of that information to assess likely outcomes.
+-Accelerate the pace of making informed decisions.
+
+## Apache Spark
+ Apache Spark is a general-purpose & lightning fast cluster computing system (a Framework) whereas Scala is a high-level programming language in which Spark is written.
+ 
+ Scala is comparatively new to the programming scene, but has become popular very quickly. 
+ 
+ A general-purpose programming language, Scala provides support for functional programming and a strong static type system.
+
+It combines concepts of object-oriented and functional programming languages. It was developed to overcome the problems faced by other languages and can easily be integrated into existing code.
+
+## What is Apache Spark?
+Apache Spark is an open source, wide range data processing engine with revealing development API’s, that qualify data workers to accomplish streaming in spark, machine learning or SQL workloads which demand repeated access to data sets. It is designed in such a way that it can perform batch processing(processing of the previously collected job in a single batch) and stream processing (deal with streaming data). It is a general purpose, cluster computing platform.
+
+Spark is designed in such a way that it integrates with all the Big data tools. For example, Spark can access any Hadoop data source and can run on Hadoop clusters. Spark extends Hadoop MapReduce to next level which includes iterative queries and stream processing.
+=======
+
+# Datos-Masivos
+
 <details>
 <summary>Contenido</summary>
 
@@ -476,7 +502,9 @@ A Naive Bayes classifier is a probabilistic machine learning model that’s used
 ![Bayes Theorem](https://miro.medium.com/max/510/1*tjcmj9cDQ-rHXAtxCu5bRQ.png)
 
 Using Bayes theorem, we can find the probability of A happening, given that B has occurred. Here, B is the evidence and A is the hypothesis. The assumption made here is that the predictors/features are independent. That is presence of one particular feature does not affect the other. Hence it is called naive.
-=======
+
+
+## Unidad 3
 ## Mineria de Datos
 La minería de datos o exploración de datos  es un campo de la estadística y las ciencias de la computación referido al proceso que intenta descubrir patrones en grandes volúmenes de conjuntos de datos.​ 
 
@@ -493,5 +521,6 @@ K-means necesita como dato de entrada el número de grupos en los que vamos a se
 A continuación, el punto se desplaza a la media de las muestras más cercanas. Esto generará una nueva asignación de muestras, ya que algunas muestras están ahora más cerca de otro centroide. Este proceso se repite de forma iterativa y los grupos se van ajustando hasta que la asignación no cambia más moviendo los puntos. Este resultado final representa el ajuste que maximiza la distancia entre los distintos grupos y minimiza la distancia intragrupo.
 
 Se repiten los pasos 2 y 3 hasta que los centroides no se mueven, o se mueven por debajo de una distancia umbral en cada paso.
+
 
 
